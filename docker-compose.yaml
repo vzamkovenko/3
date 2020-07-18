@@ -1,0 +1,34 @@
+version: "3"
+
+services:
+  php7.4.1-apache:
+    build: .
+    depends_on:
+      - PostgreSQL
+    ports:
+      - "80:80"
+    volumes:
+      - .:/src/app
+    links:
+      - PostgreSQL
+
+  PostgreSQL:
+    user: "${UID}:${GID}"
+    image: "postgres:12.1"
+    ports:
+      - "5432:5432"
+    volumes:
+      - .docker/PostgreSQL/var/lib/postgresql/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=docker
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_USER=user
+
+  Adminer:
+    image: "adminer:4.7.5"
+    ports:
+      - "8080:8080"
+    links:
+      - PostgreSQL
+
+
